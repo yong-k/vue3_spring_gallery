@@ -1,6 +1,13 @@
 <script setup>
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
+import { useAccountStore } from './scripts/store';
+
+const id = sessionStorage.getItem("id")
+if (id) {
+  const accountStore = useAccountStore()
+  accountStore.setAccount(id)
+}
 </script>
 
 <template>

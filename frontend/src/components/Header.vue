@@ -1,4 +1,20 @@
 <script setup>
+import router from '@/scripts/router';
+import { useAccountStore } from '@/scripts/store.js'
+
+const accountStore = useAccountStore()
+
+// https://pinia.vuejs.kr/core-concepts/state.html
+// state에 접근: 기본적으로 store 인스턴스로 상태에 접근하여 직접 읽고 쓸 수 있다.
+//const testId = accountStore.account.id
+
+const logout = () => {
+  const accountStore = useAccountStore()
+  accountStore.setAccount(0)
+  sessionStorage.removeItem("id")
+
+  router.push({ path: '/' })
+}
 </script>
 
 <template>
@@ -13,7 +29,9 @@
                 <router-link to="/" class="text-white">메인 화면</router-link>
               </li>
               <li>
-                <router-link to="/login" class="text-white">로그인</router-link>
+                <router-link to="/login" class="text-white" v-if="!accountStore.account.id">로그인</router-link>
+                <!-- <router-link to="/" class="text-white" @click.native="logout()" v-else>로그아웃</router-link> -->
+                <a class="text-white" @click="logout()" v-else>로그아웃</a>
               </li>
             </ul>
           </div>
@@ -35,4 +53,7 @@
 </template>
 
 <style scoped>
+a.text-white {
+  cursor: pointer;
+}
 </style>

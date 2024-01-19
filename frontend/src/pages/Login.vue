@@ -1,6 +1,8 @@
 <script setup>
 import axios from 'axios';
 import { reactive } from 'vue';
+import { useAccountStore } from '@/scripts/store.js'
+import router from '@/scripts/router'
 
 const state = reactive({
     form: {
@@ -11,8 +13,15 @@ const state = reactive({
 
 const submit = () => {
     axios.post("/api/account/login", state.form).then((res) => {
-        console.log(res)
+        // 로그인했을 때 받는 id를 store에 저장한다.
+        const accountStore = useAccountStore()
+        accountStore.setAccount(res.data)
+        sessionStorage.setItem("id", res.data)
+
+        router.replace({ path: '/' })
         window.alert("로그인하였습니다.");
+    }).catch(() => {
+        window.alert("로그인 정보가 존재하지 않습니다.")
     })
 }
 </script>
