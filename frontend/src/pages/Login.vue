@@ -16,7 +16,6 @@ const submit = () => {
         // 로그인했을 때 받는 id를 store에 저장한다.
         const accountStore = useAccountStore()
         accountStore.setAccount(res.data)
-        console.log(res.data)
         sessionStorage.setItem("id", res.data)
 
         router.replace({ path: '/' })

@@ -3,15 +3,13 @@ package com.gallery.backend.controller;
 import com.gallery.backend.entity.Member;
 import com.gallery.backend.repository.MemberRepository;
 import com.gallery.backend.service.JwtService;
-import com.gallery.backend.service.JwtServiceImpl;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
@@ -21,6 +19,9 @@ public class  AccountController {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    JwtService jwtService;
 
     @PostMapping("/api/account/login")
     public ResponseEntity login(@RequestBody Map<String, String> params, HttpServletResponse response) {
@@ -35,7 +36,6 @@ public class  AccountController {
          * f12 > application > Cookies부분에서 확인하면 된다.
          * */
         if (member != null) {
-            JwtService jwtService = new JwtServiceImpl();
             int id = member.getId();
             String token = jwtService.getToken("id", id);
 
@@ -53,7 +53,18 @@ public class  AccountController {
             //--→ 응답값으로 id를 넘겨준다.
             //    frontend의 Login.vue에서 axios 결과 console.log(response.data) 하면 id값 나온다.
         }
-
         throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
+
+    // 사용자들의 쿠키 값을 받는다.
+    @GetMapping("/api/account/check")
+    public ResponseEntity check(@CookieValue(value = "token", required = false) String token) {
+        Claims claims = jwtService.getClaims(token);
+
+        if (claims != null) {
+            int id = Integer.parseInt(claims.get("id").toString());
+            return new ResponseEntity<>(id, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 }

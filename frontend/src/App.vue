@@ -2,12 +2,47 @@
 import Header from './components/Header.vue';
 import Footer from './components/Footer.vue';
 import { useAccountStore } from './scripts/store';
+import axios from 'axios';
+import { useRoute } from 'vue-router';
+import { watch } from 'vue';
 
-const id = sessionStorage.getItem("id")
-if (id) {
-  const accountStore = useAccountStore()
-  accountStore.setAccount(id)
+const accountStore = useAccountStore()
+
+const check = () => {
+  axios.get("/api/account/check").then(({ data }) => {
+    console.log("data: " + data)
+
+    // if (data)
+    //   accountStore.setAccount(data)
+    // else
+    //   accountStore.setAccount(0)
+    // 
+    // 이거 한 줄로 줄이면, 
+    //        ↓↓↓↓ 
+    // 
+    accountStore.setAccount(data || 0)
+  })
 }
+
+// 위에서 jwt 사용해서 로그인 처리했으므로,
+// 기존에 sessionStorage로 했더니거 지움
+/*
+const id = sessionStorage.getItem("id")
+if (id) 
+  accountStore.setAccount(id)
+*/
+
+// 현재 브라우저의 url 관련 정보를 가져온다.
+const route = useRoute();
+
+// 위 경로가 바뀔 때마다 감시해주는 watch()
+//--→ 여기서는 경로가 바뀔 때마다 감시해서 check() 실행한다.
+watch(route, () => {
+  check()
+})
+//--→ f12 > Network > request 뜬거에서 check 클릭해서 Preview 칸 보면 된다.
+//    그냥 메인에서 실행했을 때는 check 비어있다.
+//    로그인한다음에 check 확인해보면, response으로 받은 id 값 확인할 수 있다.
 </script>
 
 <template>
