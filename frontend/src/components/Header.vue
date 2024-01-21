@@ -28,6 +28,9 @@ const logout = () => {
               <li>
                 <router-link to="/" class="text-white">메인 화면</router-link>
               </li>
+              <li v-if="accountStore.account.id">
+                <router-link to="/orders" class="text-white">주문 내역</router-link>
+              </li>
               <li>
                 <router-link to="/login" class="text-white" v-if="!accountStore.account.id">로그인</router-link>
                 <!-- <router-link to="/" class="text-white" @click.native="logout()" v-else>로그아웃</router-link> -->
