@@ -27,5 +27,5 @@ axios.get("/api/items").then(({ data }) => {
   </div>
 </template>
 
-<style>
+<style scoped>
 </style>
