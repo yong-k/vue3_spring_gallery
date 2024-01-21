@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { computed, reactive } from 'vue';
 import getNumberFormatted from '@/scripts/lib'
+import router from '@/router';
 
 const state = reactive({
   items: [],
@@ -30,7 +31,8 @@ const submit = () => {
   args.items = JSON.stringify(state.items)
 
   axios.post("/api/orders", args).then(() => {
-    console.log("success")
+    alert("주문 완료하였습니다.");
+    router.push({ path: "/orders" })
   })
 }
 

@@ -19,7 +19,7 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public String getToken(String key, Object value) {
         Date expTime = new Date();  // 토큰의 유효시간
-        expTime.setTime(expTime.getTime() + 1000 * 60 * 5); // 5분으로 설정
+        expTime.setTime(expTime.getTime() + 1000 * 60 * 30); // 30분으로 설정
         byte[] secretByteKey = DatatypeConverter.parseBase64Binary(secretKey);    // secretKey를 byte로 만듦
         Key signKey = new SecretKeySpec(secretByteKey, SignatureAlgorithm.HS256.getJcaName());
 
